@@ -1,0 +1,80 @@
+const songs = [
+            {
+                title:"Fire!",
+                artists: ["Alan Walker", "YUQI", "(G)I-DLE", "JVKE"],
+                src: "./music/Alan Walker - Fire! (feat. YUQI ((G)I-DLE), JVKE).mp3",
+                artwork: "./artwork/fire!.jpg"
+            },
+            {
+                title: "People You Know",
+                artists: ["Selena Gomez"],
+                src: "./music/Selena Gomez - People You Know.mp3",
+                artwork: "./artwork/people_you_know.jpg"
+            },
+            {
+                title: "Attention",
+                artists: ["Charlie Puth"],
+                src: "./music/Charlie Puth - Attention.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Daylight",
+                artists: ["David Kushner"],
+                src: "./music/David Kushner - Daylight.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "This Is What You Came For",
+                artists: ["Calvin Harris"],
+                src: "./music/Calvin Harris - This Is What You Came For.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Something Just Like This",
+                artists: ["Coldplay"],
+                src: "./music/Coldplay - Something Just Like This.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Bloody Sweet",
+                artists: ["Anirudh Ravichander"],
+                src: "./music/Anirudh Ravichander - Bloody Sweet (From Leo).mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Hukum Thalaivar Alappara",
+                artists: ["Anirudh Ravichander"],
+                src: "./music/Anirudh_Ravichander_Hukum_Thalaivar_Alappara_From_Jailer_.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Mockingbird",
+                artists: ["Eminem"],
+                src: "./music/Eminem - Mockingbird.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Ghost",
+                artists: ["Justin Bieber"],
+                src: "./music/Justin Bieber - Ghost.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Strangers",
+                artists: ["Kenya Grace"],
+                src: "./music/Kenya Grace - Strangers.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Cupid (Twin Ver.)",
+                artists: ["Fifty fifty"],
+                src: "./music/Fifty fifty - Cupid (Twin Ver.).mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Creepin'",
+                artists: ["Metro Boomin"],
+                src: "./music/Metro Boomin - Creepin'.mp3",
+                artwork: "./artwork/default-art.jpg"
+            }
+        ];

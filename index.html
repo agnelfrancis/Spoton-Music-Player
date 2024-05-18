@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spoton Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .navbar {
+            width: 100%;
+            background-color: #1c1c1c;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .music-player {
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .select-music {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .select-music h2 {
+            margin-bottom: 20px;
+        }
+        .select-music button {
+            background-color: #333;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+        .current-song {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .album-art {
+            width: 300px;
+            height: 300px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
+        .song-info {
+            text-align: center;
+        }
+        .song-info h2, .song-info p {
+            margin: 5px 0;
+        }
+        .song-info p {
+            color: #b3b3b3;
+        }
+        .playlist {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+        .playlist li {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .playlist li:hover, .playlist li.active {
+            background-color: #333;
+        }
+        .controls {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .controls button, .controls input[type="range"] {
+            background-color: #333;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls input[type="range"] {
+            width: 100px;
+            appearance: none;
+        }
+        .controls input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        .progress-bar {
+            display: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .progress-time {
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        .progress-bar input[type="range"] {
+            flex-grow: 1;
+            margin: 0 10px;
+            appearance: none
+            ;
+        }
+        .progress-bar input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        @media screen and (max-width: 600px) {
+            .controls {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-around;
+            }
+            .controls button {
+                padding: 8px;
+            }
+            .progress-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+            .progress-time {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Spoton Music</h1>
+    </div>
+    <div class="music-player">
+        <div class="select-music" id="select-music">
+            <h2>Select a song</h2>
+            <ul class="playlist" id="playlist">
+                <!-- Playlist items will be dynamically generated here -->
+            </ul>
+        </div>
+        <div class="current-song" id="current-song">
+            <button id="backButton"><i class="fas fa-chevron-left"></i></button>
+            <div class="album-art" id="album-art" style="background-image: url('./music/default-art.jpg');"></div>
+            <div class="song-info">
+                <h2 id="song-title">Song Title</h2>
+                <p id="song-artist">Artist</p>
+            </div>
+            <div class="controls" id="controls">
+                <button id="prev"><i class="fas fa-backward"></i></button>
+                <button id="play-pause"><i class="fas fa-play"></i></button>
+                <button id="next"><i class="fas fa-forward"></i></button>
+                <button id="shuffle"><i class="fas fa-random"></i></button>
+                <input type="range" id="volume" min="0" max="1" step="0.01">
+            </div>
+            <div class="progress-bar" id="progress-bar">
+                <span class="progress-time" id="current-time">00:00</span>
+                <input type="range" id="progress" min="0" max="100" value="0">
+                <span class="progress-time" id="duration">00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio" src=""></audio>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+        const songs = [
+            {
+                title:"Fire!",
+                artists: ["Alan Walker", "YUQI", "(G)I-DLE", "JVKE"],
+                src: "./music/Alan Walker - Fire! (feat. YUQI ((G)I-DLE), JVKE).mp3",
+                artwork: "./artwork/fire!.jpg"
+            },
+            {
+                title: "People You Know",
+                artists: ["Selena Gomez"],
+                src: "./music/Selena Gomez - People You Know.mp3",
+                artwork: "./artwork/people_you_know.jpg"
+            },
+            {
+                title: "Attention",
+                artists: ["Charlie Puth"],
+                src: "./music/Charlie Puth - Attention.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Daylight",
+                artists: ["David Kushner"],
+                src: "./music/David Kushner - Daylight.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "This Is What You Came For",
+                artists: ["Calvin Harris"],
+                src: "./music/Calvin Harris - This Is What You Came For.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Something Just Like This",
+                artists: ["Coldplay"],
+                src: "./music/Coldplay - Something Just Like This.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Bloody Sweet",
+                artists: ["Anirudh Ravichander"],
+                src: "./music/Anirudh Ravichander - Bloody Sweet (From Leo).mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Hukum Thalaivar Alappara",
+                artists: ["Anirudh Ravichander"],
+                src: "./music/Anirudh_Ravichander_Hukum_Thalaivar_Alappara_From_Jailer_.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Mockingbird",
+                artists: ["Eminem"],
+                src: "./music/Eminem - Mockingbird.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Ghost",
+                artists: ["Justin Bieber"],
+                src: "./music/Justin Bieber - Ghost.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Strangers",
+                artists: ["Kenya Grace"],
+                src: "./music/Kenya Grace - Strangers.mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Cupid (Twin Ver.)",
+                artists: ["Fifty fifty"],
+                src: "./music/Fifty fifty - Cupid (Twin Ver.).mp3",
+                artwork: "./artwork/default-art.jpg"
+            },
+            {
+                title: "Creepin'",
+                artists: ["Metro Boomin"],
+                src: "./music/Metro Boomin - Creepin'.mp3",
+                artwork: "./artwork/default-art.jpg"
+            }
+        ];
+
+        let currentIndex = null;
+        let autoPlay = true; // Autoplay feature enabled by default
+
+        const selectMusicSection = document.getElementById('select-music');
+        const currentSongSection = document.getElementById('current-song');
+        const controlsSection = document.getElementById('controls');
+        const progressBarSection = document.getElementById('progress-bar');
+
+        const playlist = document.getElementById('playlist');
+        const songTitle = document.getElementById('song-title');
+        const songArtist = document.getElementById('song-artist');
+        const albumArt = document.getElementById('album-art');
+        const audio = document.getElementById('audio');
+        const playPauseBtn = document.getElementById('play-pause');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const shuffleBtn = document.getElementById('shuffle');
+        const volumeControl = document.getElementById('volume');
+        const progress = document.getElementById('progress');
+        const currentTime = document.getElementById('current-time');
+        const duration = document.getElementById('duration');
+        const backButton = document.getElementById('backButton');
+
+        function loadSong(index) {
+            const song = songs[index];
+            audio.src = song.src;
+            songTitle.innerText = song.title;
+            songArtist.innerText = song.artists.join(", ");
+            albumArt.style.backgroundImage = `url('${song.artwork}')`;
+            audio.load();
+            currentIndex = index;
+            updateUI();
+           // Autoplay if enabled
+           if (autoPlay) {
+                audio.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+
+        function playPause() {
+            if (audio.paused) {
+                audio.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audio.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+
+        function prevSong() {
+            currentIndex = (currentIndex === 0) ? songs.length - 1 : currentIndex - 1;
+            loadSong(currentIndex);
+        }
+
+        function nextSong() {
+            currentIndex = (currentIndex === songs.length - 1) ? 0 : currentIndex + 1;
+            loadSong(currentIndex);
+        }
+
+        function shuffleSongs() {
+            let currentIndexCopy = currentIndex;
+            while (currentIndexCopy === currentIndex) {
+                currentIndex = Math.floor(Math.random() * songs.length);
+            }
+            loadSong(currentIndex);
+        }
+
+        function setVolume() {
+            audio.volume = volumeControl.value;
+        }
+
+        function updateProgressBar() {
+            const progressPercent = (audio.currentTime / audio.duration) * 100;
+            progress.value = progressPercent;
+            currentTime.innerText = formatTime(audio.currentTime);
+            duration.innerText = formatTime(audio.duration);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function updateUI() {
+            selectMusicSection.style.display = currentIndex === null ? 'flex' : 'none';
+            currentSongSection.style.display = currentIndex === null ? 'none' : 'flex';
+            controlsSection.style.display = currentIndex === null ? 'none' : 'flex';
+            progressBarSection.style.display = currentIndex === null ? 'none' : 'flex';
+            playPauseBtn.innerHTML = audio.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+        }
+
+        function initializePlayer() {
+            selectMusicSection.style.display = 'flex';
+            currentSongSection.style.display = 'none';
+            controlsSection.style.display = 'none';
+            progressBarSection.style.display = 'none';
+
+            const playlistItems = songs.map((song, index) => {
+                return `<li onclick="loadSong(${index})">${song.title} - ${song.artists.join(', ')}</li>`;
+            }).join('');
+            playlist.innerHTML = playlistItems;
+
+            volumeControl.addEventListener('input', setVolume);
+            progress.addEventListener('input', () => {
+                const seekTime = (progress.value / 100) * audio.duration;
+                audio.currentTime = seekTime;
+            });
+            audio.addEventListener('timeupdate', updateProgressBar);
+            audio.addEventListener('ended', nextSong);
+            shuffleBtn.addEventListener('click', shuffleSongs);
+            playPauseBtn.addEventListener('click', playPause);
+            prevBtn.addEventListener('click', prevSong);
+            nextBtn.addEventListener('click', nextSong);
+            backButton.addEventListener('click', ()=> {
+                currentIndex = null;
+                updateUI();
+            });
+        }
+
+        initializePlayer();
+    </script>
+</body>
+</html>
+
